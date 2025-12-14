@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Quản lý người dùng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="../css/trangchuAdmin.css" rel="stylesheet" />
+    <link href="../css/qlNguoiDung.css" rel="stylesheet" />
+
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-top-section">
+                <div class="logo-container">
+                    <i class="fa-solid fa-circle-user fa-flip-horizontal" style="color: #ffffff; font-size: 40px;"></i>
+                    <div class="logo-text-container">
+                        <h1 class="logo-title">Admin</h1>
+                    </div>
+                </div>
+                <nav class="nav-menu">
+                    <a class="nav-item" href="trangchuAdmin.html"> <span
+                            class="material-symbols-outlined">dashboard</span>
+                        <p>Bảng điều khiển</p>
+                    </a>
+                    <a class="nav-item active" href="#"> <span class="material-symbols-outlined">group</span>
+                        <p>Quản lý người dùng</p>
+                    </a>
+                </nav>
+            </div>
+            <div class="sidebar-bottom-section">
+                <a id="btnLogout" class="nav-item" href="#">
+                    <span class="material-symbols-outlined">logout</span>
+                    <p>Đăng xuất</p>
+                </a>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <div class="search-container">
+                    <h2 class="dashboard-title">Quản lý người dùng</h2>
+                </div>
+            </header>
+            <div class="dashboard-area">
+
+                <div class="action-bar-container">
+                    <div class="search-and-filter">
+                        <div class="search-container-small">
+                            <span class="material-symbols-outlined search-icon">search</span>
+                            <input type="text" placeholder="Tìm kiếm người dùng..." class="search-input-small">
+                        </div>
+                    </div>
+                    <button class="add-user-btn">
+                        <span class="material-symbols-outlined">add</span>
+                        Thêm người dùng
+                    </button>
+                </div>
+                <!-- Modal thêm user -->
+                <div id="addUserModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h3>Thêm người dùng mới</h3>
+                        <form id="addUserForm">
+                            <div class="form-group">
+                                <label>Username</label>
+                                <input type="text" id="newUsername" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="newEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                <input type="password" id="newPassword" required>
+                            </div>
+                            <button type="submit">Thêm</button>
+                        </form>
+                    </div>
+                </div>
+
+
+                <div class="data-panel">
+                    <div class="tab-bar">
+                        <a class="tab-link active-tab" href="#">
+                            <p>Tất cả người dùng</p>
+                        </a>
+                        <a class="tab-link" href="#" id="activeUsersTab">
+                            <p>Đang hoạt động</p>
+                        </a>
+                    </div>
+                    <div class="table-scroll-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="table-header user-col">Người dùng</th>
+                                    <th class="table-header status-col">Trạng thái</th>
+                                    <th class="table-header">Vai trò</th>
+                                    <th class="table-header">Email</th>
+                                    <th class="table-header action-col">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="../js/qlNguoiDung.js"></script>
+    <script>
+        document.getElementById("btnLogout").addEventListener("click", () => {
+            const confirmLogout = confirm("Bạn có chắc muốn đăng xuất không?");
+            if (!confirmLogout) return;
+
+            const tokenAdmin = localStorage.getItem("token_admin");
+            if (tokenAdmin && window.socket) {
+                window.socket.emit("user_offline", { token: tokenAdmin }, () => {
+                    // Callback khi server nhận
+                    localStorage.removeItem("token_admin");
+                    localStorage.removeItem("userId_admin");
+                    localStorage.removeItem("role_admin");
+                    window.location.href = "../index.html";
+                });
+            } else {
+                localStorage.removeItem("token_admin");
+                localStorage.removeItem("userId_admin");
+                localStorage.removeItem("role_admin");
+                window.location.href = "../index.html";
+            }
+        });
+        window.addEventListener("beforeunload", (e) => {
+            logoutAdmin();
+        });
+
+    </script>
+</body>
+
+</html>

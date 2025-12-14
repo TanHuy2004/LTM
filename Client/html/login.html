@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../css/login.css">
+
+</head>
+
+<body>
+    <div class="container">
+        <h1>Đăng nhập</h1>
+
+        <div class="form-box">
+            <form>
+                <label for="username">Tài khoản</label>
+                <input id="username" type="text" placeholder="Nhập tài khoản của bạn">
+
+                <label for="password">Mật khẩu</label>
+                <div class="password-group">
+                    <input id="password" type="password" placeholder="Nhâp mật khẩu của bạn">
+                    <button id="togglePassword" type="button">
+                        <span id="iconEye" class="material-symbols-outlined">visibility</span>
+                    </button>
+                </div>
+
+                <p class="signup-text">
+                    Bạn có tài khoản chưa?
+                    <a href="./register.html">Đăng ký</a>
+                </p>
+
+                <button class="btn-primary" type="submit">Đăng nhập</button>
+            </form>
+        </div>
+
+    </div>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+
+</html>

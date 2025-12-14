@@ -1,0 +1,157 @@
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            background: #f6f6f8;
+            color: #111318;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90vh;
+            padding: 20px;
+        }
+
+        /* CONTAINER */
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* HEADING */
+        h1 {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        /* FORM BOX */
+        .form-box {
+            background: white;
+            border: 1px solid #dbdfe6;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 25px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input {
+            width: 100%;
+            height: 46px;
+            border: 1px solid #dbdfe6;
+            border-radius: 8px;
+            padding: 0 12px;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            border-color: #135bec;
+            outline: 2px solid rgba(19, 91, 236, 0.3);
+        }
+
+        /* PASSWORD TOGGLE */
+        .password-group {
+            position: relative;
+        }
+
+        .password-group button {
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #616f89;
+        }
+
+        /* BUTTONS */
+        .btn-primary {
+            width: 100%;
+            height: 46px;
+            background: #135bec;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .btn-primary:hover {
+            background: #0f4bc2;
+        }
+
+        /* SIGNUP */
+        .signup-text {
+            text-align: left;
+            margin-bottom: 20px;
+            color: #616f89;
+            font-size: 14px;
+        }
+
+        .signup-text a {
+            color: #135bec;
+            font-weight: 500;
+            text-decoration: underline;
+        }
+
+        /* ===========================
+           RESPONSIVE
+        ============================*/
+
+        /* Tablet */
+        @media (max-width: 768px) {
+            .form-box {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 480px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .form-box {
+                padding: 18px;
+                border-radius: 10px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            input,
+            .btn-primary {
+                height: 44px;
+            }
+
+            label {
+                font-size: 13px;
+            }
+
+            .signup-text {
+                font-size: 13px;
+            }
+        }

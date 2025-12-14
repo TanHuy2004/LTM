@@ -1,0 +1,271 @@
+/* ==================== QS Nguoi Dung (qlNguoiDung.css) ==================== */
+
+/* Action Bar */
+.action-bar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+/* Search and Filter Group */
+.search-and-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Small Search Container */
+.search-container-small {
+    position: relative;
+    width: 100%;
+    max-width: 20rem;
+}
+
+.search-input-small {
+    width: 100%;
+    padding: 0.5rem 1rem 0.5rem 2.5rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5rem;
+    /* Sử dụng foreground cho input để nổi bật trên nền dashboard */
+    background-color: var(--color-foreground-light); 
+    color: var(--color-text-light);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .search-input-small {
+    border-color: var(--color-border-dark);
+    background-color: var(--color-foreground-dark);
+    color: var(--color-text-dark);
+}
+
+.search-container-small .search-icon {
+    position: absolute;
+    left: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-light-secondary);
+}
+
+.dark .search-container-small .search-icon {
+    color: var(--color-text-dark-secondary);
+}
+
+/* Filter Button (Icon Only) */
+.icon-btn.filter-btn {
+    padding: 0.5rem;
+    background-color: var(--color-foreground-light);
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5rem;
+    margin-left: 90px;
+    cursor: pointer;
+    color: var(--color-text-light-secondary);
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+.dark .icon-btn.filter-btn {
+    background-color: var(--color-foreground-dark);
+    border-color: var(--color-border-dark);
+    color: var(--color-text-dark-secondary);
+}
+.icon-btn.filter-btn:hover {
+    background-color: var(--color-hover-light);
+    color: var(--color-text-light);
+}
+.dark .icon-btn.filter-btn:hover {
+    background-color: var(--color-hover-dark);
+    color: var(--color-text-dark);
+}
+
+
+/* Add User Button */
+.add-user-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none; /* Bỏ border để khớp với style primary button */
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    transition: background-color 0.2s ease;
+    background-color: #3333337e;
+}
+
+.add-user-btn:hover {
+    /* Đảm bảo màu hover phù hợp, có thể làm tối màu primary */
+    background-color: #333333; 
+}
+
+
+/* --- Sidebar Active Fix (Đã có trong CSS gốc, nhưng giữ lại để ưu tiên) --- */
+.sidebar .nav-menu .nav-item:nth-child(1) {
+    /* Bảng điều khiển - Đảm bảo KHÔNG active */
+    background-color: transparent !important;
+    color: var(--color-text-light-secondary) !important;
+}
+
+.dark .sidebar .nav-menu .nav-item:nth-child(1) {
+    color: var(--color-text-dark-secondary) !important;
+}
+
+.sidebar .nav-menu .nav-item:nth-child(2) {
+    /* Quản lý người dùng - Đảm bảo ACTIVE */
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+}
+
+
+/* --- Modal Styles --- */
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); 
+}
+
+.modal-content {
+    background-color: var(--color-foreground-light);
+    color: var(--color-text-light);
+    margin: 10% auto; 
+    padding: 30px;
+    border: 1px solid var(--color-border-light);
+    width: 100%;
+    max-width: 450px; 
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.dark .modal-content {
+    background-color: var(--color-foreground-dark);
+    color: var(--color-text-dark);
+    border: 1px solid var(--color-border-dark);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.6);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-light); 
+}
+
+.dark .modal-content h3 {
+    color: var(--color-text-dark); 
+}
+
+/* Nút Đóng */
+.modal .close {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 30px;
+    font-weight: 300;
+    color: var(--color-text-light-secondary);
+    transition: color 0.2s;
+}
+
+.modal .close:hover,
+.modal .close:focus {
+    color: var(--color-primary);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.dark .modal .close {
+    color: var(--color-text-dark-secondary);
+}
+
+.dark .modal .close:hover,
+.dark .modal .close:focus {
+    /* Sử dụng màu chữ chính trong dark mode */
+    color: var(--color-text-dark); 
+}
+
+/* Form Group Styling */
+.modal-content .form-group {
+    margin-bottom: 1rem;
+}
+
+.modal-content label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="email"],
+.modal-content input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5rem;
+    background-color: var(--color-background-light); 
+    color: var(--color-text-light);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dark .modal-content input[type="text"],
+.dark .modal-content input[type="email"],
+.dark .modal-content input[type="password"] {
+    border: 1px solid var(--color-border-dark);
+    background-color: var(--color-background-dark); 
+    color: var(--color-text-dark);
+}
+
+.modal-content input:focus {
+    border-color: var(--color-primary);
+    /* Giữ lại màu focus nhẹ nhàng */
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1); 
+}
+.dark .modal-content input:focus {
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Nút Thêm (Submit) */
+.modal-content button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    background-color: var(--color-primary);
+    color: #ffffff;
+    transition: background-color 0.2s ease;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #333333; 
+}
+
+
+/* Animation cho modal */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html class="dark" lang="vi">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Bảng điều khiển đăng nhập/đăng xuất theo thời gian thực</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="../css/trangchuAdmin.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="main-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-top-section">
+                <div class="logo-container">
+                    <i class="fa-solid fa-circle-user fa-flip-horizontal" style="color: #ffffff; font-size: 40px;"></i>
+                    <div class="logo-text-container">
+                        <h1 class="logo-title">Admin</h1>
+                    </div>
+                </div>
+                <nav class="nav-menu">
+                    <a class="nav-item active" href="#">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <p>Trang chủ</p>
+                    </a>
+                    <a class="nav-item" href="../admin/qlNguoiDung.html"> <span
+                            class="material-symbols-outlined">group</span>
+                        <p>Quản lý người dùng</p>
+                    </a>
+                </nav>
+            </div>
+            <div class="sidebar-bottom-section">
+                <a id="btnLogout" class="nav-item" href="#">
+                    <span class="material-symbols-outlined">logout</span>
+                    <p>Đăng xuất</p>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="search-container">
+                    <h2 class="dashboard-title">Bảng điều khiển quản trị</h2>
+                </div>
+            </header>
+
+            <div class="dashboard-area">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p class="stat-label">Tổng số người dùng</p>
+                        <p class="stat-value" id="totalUserCount">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Đang online</p>
+                        <p class="stat-value" id="onlineCount">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Bất thường được phát hiện</p>
+                        <p class="stat-value">0</p>
+                    </div>
+                </div>
+                <div class="data-panel">
+                    <div class="tab-bar"> <a class="tab-link active-tab" href="#">
+                            <p>Các tài khoản người dùng</p>
+                        </a> </div>
+                    <div class="table-scroll-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="table-header user-col">Người dùng</th>
+                                    <th class="table-header ">Email</th>
+                                    <th class="table-header status-col">Trạng thái</th>
+                                    <th class="table-header">Thời gian đăng nhập</th>
+                                    <th class="table-header">Lần đăng nhập cuối</th>
+                                </tr>
+                            </thead>
+                            <tbody id="userTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="../js/trangchuAdmin.js"></script>
+</body>
+
+</html>

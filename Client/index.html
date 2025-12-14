@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
+
+
+</head>
+
+<body>
+    <div class="container">
+        <header class="navbar">
+            <div class="logo">Ứng Dụng Web</div>
+
+            <nav class="nav-links">
+                <button class="login-btn" id="authButton">Đăng nhập</button>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <div class="hero-bg"></div>
+            <div class="hero-content">
+                <h1>Trang chủ</h1>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const socket = io("http://localhost:5000");
+            window.socket = socket; // expose toàn cục nếu cần
+
+            const token = localStorage.getItem("token_user") || localStorage.getItem("token_admin");
+            const role = localStorage.getItem("role_user") || localStorage.getItem("role_admin");
+            const authBtn = document.getElementById("authButton");
+
+            if (token && role) {
+                // Đánh dấu online
+                socket.emit("user_online", { token });
+
+                authBtn.textContent = "Đăng xuất";
+                authBtn.onclick = () => {
+                    if (token && socket.connected) {
+                        socket.emit("user_offline", { token }, () => {
+                            // callback khi server đã lưu xong Status
+                            localStorage.removeItem("token_user");
+                            localStorage.removeItem("userId_user");
+                            localStorage.removeItem("role_user");
+                            localStorage.removeItem("token_admin");
+                            localStorage.removeItem("userId_admin");
+                            localStorage.removeItem("role_admin");
+                            window.location.href = "./index.html";
+                        });
+                    } else {
+                        localStorage.clear();
+                        window.location.href = "./index.html";
+                    }
+                };
+
+                // Auto-logout khi tab đóng
+                window.addEventListener("beforeunload", () => {
+                    if (token) {
+                        const data = JSON.stringify({ token });
+                        navigator.sendBeacon(
+                            "http://localhost:5000/api/auth/auto-logout",
+                            new Blob([data], { type: 'application/json' })
+                        );
+                    }
+                });
+
+            } else {
+                authBtn.onclick = () => window.location.href = "./html/login.html";
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>
