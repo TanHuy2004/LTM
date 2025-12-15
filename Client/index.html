@@ -33,9 +33,10 @@
         </main>
     </div>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="./js/config.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const socket = io("http://localhost:5000");
+            const socket = io(window.AppConfig.getSocketUrl());
             window.socket = socket; // expose toàn cục nếu cần
 
             const token = localStorage.getItem("token_user") || localStorage.getItem("token_admin");
@@ -70,7 +71,7 @@
                     if (token) {
                         const data = JSON.stringify({ token });
                         navigator.sendBeacon(
-                            "http://localhost:5000/api/auth/auto-logout",
+                            window.AppConfig.getApiUrl("/api/auth/auto-logout"),
                             new Blob([data], { type: 'application/json' })
                         );
                     }

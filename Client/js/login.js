@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(window.AppConfig.getApiUrl("/api/auth/login"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Kết nối Socket
-      const socket = io("http://localhost:5000");
+      const socket = io(window.AppConfig.getSocketUrl());
       socket.emit("user_online", { token: data.token });
 
     } catch (err) {

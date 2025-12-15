@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    const socket = window.socket = io("http://localhost:5000"); // Lưu socket
+    const socket = window.socket = io(window.AppConfig.getSocketUrl()); // Lưu socket
 
     // Khi connect xong, request online list ngay lập tức
     socket.on("connect", () => {
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load tổng số người dùng
     async function loadTotalUsers() {
         try {
-            const res = await fetch("http://localhost:5000/api/auth/total", {
+            const res = await fetch(window.AppConfig.getApiUrl("/api/auth/total"), {
                 headers: { "Authorization": `Bearer ${tokenAdmin}` }
             });
             if (!res.ok) throw new Error("Không có quyền truy cập API!");
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
         logoutAdmin();
     });
     async function loadUsers() {
-        const res = await fetch("http://localhost:5000/api/auth/users/status", {
+        const res = await fetch(window.AppConfig.getApiUrl("/api/auth/users/status"), {
             headers: { "Authorization": `Bearer ${tokenAdmin}` }
         });
         const users = await res.json();

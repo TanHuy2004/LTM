@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const authRoutes = require('./routes/authRoutes'); 
+const authRoutes = require('./routes/authRoutes');
 const Status = require('./models/Status');
 
 const app = express();
@@ -111,6 +111,66 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () =>
-    console.log(`Server running at http://localhost:${PORT}`)
-);
+const HOST = process.env.HOST || '127.0.0.1';
+
+// Error handling for invalid IP
+server.on('error', (err) => {
+    if (err.code === 'EADDRNOTAVAIL') {
+        console.log('\n❌ ERROR: IP address not available!');
+        console.log(`   The IP ${HOST} is not valid for this computer.`);
+        console.log('\n💡 SOLUTIONS:');
+        console.log('   1. Run "ipconfig" (Windows) or "ifconfig" (Mac/Linux) to find your IP');
+        console.log('   2. Edit Server/.env file');
+        console.log(`   3. Change HOST=${HOST} to your actual IP`);
+        console.log('   4. Or use HOST=0.0.0.0 for all network interfaces');
+        console.log('\n');
+        process.exit(1);
+    } else {
+        console.log('Server error:', err);
+    }
+});
+
+server.listen(PORT, HOST, () => {
+    const os = require('os');
+    const interfaces = os.networkInterfaces();
+    let localIP = 'Not found';
+
+    // Get actual IP addresses
+    for (const name of Object.keys(interfaces)) {
+        for (const interface of interfaces[name]) {
+            if (interface.family === 'IPv4' && !interface.internal) {
+                if (localIP === 'Not found') {
+                    localIP = interface.address;
+                }
+            }
+        }
+    }
+
+    console.log('\n===================================');
+    console.log('🚀 LTM - Login Tracking System');
+    console.log('===================================');
+    console.log(`📍 Local access: http://localhost:${PORT}`);
+    console.log(`🖥️  Your IP: ${localIP}`);
+
+    if (HOST !== '127.0.0.1' && HOST !== 'localhost') {
+        console.log(`🌐 Network access: http://${HOST}:${PORT}`);
+
+        // Check if HOST matches actual IP
+        if (HOST !== '0.0.0.0' && HOST !== localIP) {
+            console.log('\n⚠️  WARNING: HOST in .env does not match your IP!');
+            console.log(`   Your actual IP: ${localIP}`);
+            console.log(`   HOST in .env: ${HOST}`);
+        }
+
+        console.log('\n📝 Other computers can access using:');
+        console.log(`   → http://${HOST}:${PORT}`);
+    } else if (HOST === '127.0.0.1') {
+        console.log('\n📝 Network access: DISABLED');
+        console.log('   To enable: Edit .env and set HOST=0.0.0.0 or your IP');
+    }
+
+    console.log('\n🔧 To change network access:');
+    console.log('   → Edit Server/.env file');
+    console.log(`   → Current HOST: ${HOST}`);
+    console.log('===================================\n');
+});
