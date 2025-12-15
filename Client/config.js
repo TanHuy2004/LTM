@@ -1,7 +1,5 @@
 const SERVER_CONFIG = {
-  // Example: const SERVER_IP = '192.168.1.106';
-  // Contact the server administrator for the correct IP
-  SERVER_IP: "192.168.1.106", // <-- CHANGE THIS VALUE!
+  SERVER_IP: "192.168.1.106",
   PORT: 5000,
 };
 
