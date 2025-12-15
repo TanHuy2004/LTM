@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const tbody = document.getElementById("userTableBody");
 
     try {
-        const res = await fetch("http://localhost:5000/api/auth/users", {
+        const res = await fetch(window.AppConfig.getApiUrl("/api/auth/users"), {
             headers: { Authorization: `Bearer ${tokenAdmin}` }
         });
         const users = await res.json();
@@ -44,7 +44,7 @@ async function deleteUser(id) {
     const tokenAdmin = localStorage.getItem("token_admin");
 
     try {
-        const res = await fetch(`http://localhost:5000/api/auth/users/${id}`, {
+        const res = await fetch(window.AppConfig.getApiUrl(`/api/auth/users/${id}`), {
             method: "DELETE",
             headers: { Authorization: `Bearer ${tokenAdmin}` }
         });
@@ -95,7 +95,7 @@ addUserForm.addEventListener("submit", async (e) => {
     const tokenAdmin = localStorage.getItem("token_admin");
 
     try {
-        const res = await fetch("http://localhost:5000/api/auth/register", {
+        const res = await fetch(window.AppConfig.getApiUrl("/api/auth/register"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

@@ -113,6 +113,10 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 5000;
 const HOST = process.env.HOST || '127.0.0.1';
 
+// For demo: if HOST is localhost, bind to all interfaces (0.0.0.0) to allow external connections
+// But keep display as localhost for simplicity
+const BIND_HOST = HOST === 'localhost' ? '0.0.0.0' : HOST;
+
 // Error handling for invalid IP
 server.on('error', (err) => {
     if (err.code === 'EADDRNOTAVAIL') {
@@ -130,7 +134,7 @@ server.on('error', (err) => {
     }
 });
 
-server.listen(PORT, HOST, () => {
+server.listen(PORT, BIND_HOST, () => {
     const os = require('os');
     const interfaces = os.networkInterfaces();
     let localIP = 'Not found';
