@@ -13,7 +13,6 @@ const sequelize = new Sequelize(
       enableArithAbort: true
     },
     logging: false,
-    timezone: '+07:00'
   }
 );
 

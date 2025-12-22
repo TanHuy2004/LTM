@@ -28,7 +28,7 @@
                 <nav class="nav-menu">
                     <a class="nav-item" href="trangchuAdmin.html"> <span
                             class="material-symbols-outlined">dashboard</span>
-                        <p>Bảng điều khiển</p>
+                        <p>Trang chủ</p>
                     </a>
                     <a class="nav-item active" href="#"> <span class="material-symbols-outlined">group</span>
                         <p>Quản lý người dùng</p>
@@ -113,33 +113,9 @@
             </div>
         </main>
     </div>
-    <script src="../js/qlNguoiDung.js"></script>
-    <script>
-        document.getElementById("btnLogout").addEventListener("click", () => {
-            const confirmLogout = confirm("Bạn có chắc muốn đăng xuất không?");
-            if (!confirmLogout) return;
-
-            const tokenAdmin = localStorage.getItem("token_admin");
-            if (tokenAdmin && window.socket) {
-                window.socket.emit("user_offline", { token: tokenAdmin }, () => {
-                    // Callback khi server nhận
-                    localStorage.removeItem("token_admin");
-                    localStorage.removeItem("userId_admin");
-                    localStorage.removeItem("role_admin");
-                    window.location.href = "../index.html";
-                });
-            } else {
-                localStorage.removeItem("token_admin");
-                localStorage.removeItem("userId_admin");
-                localStorage.removeItem("role_admin");
-                window.location.href = "../index.html";
-            }
-        });
-        window.addEventListener("beforeunload", (e) => {
-            logoutAdmin();
-        });
-
-    </script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="../config.js"></script>
+    <script src="../js/trangchuAdmin.js"></script>
 </body>
 
 </html>

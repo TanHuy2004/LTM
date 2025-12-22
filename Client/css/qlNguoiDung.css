@@ -269,3 +269,19 @@
         transform: translateY(0);
     }
 }
+
+
+/* CSS cho nút Xóa */
+button.delete-btn {
+    background-color: #e74c3c; /* màu đỏ */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.delete-btn:hover {
+    background-color: #c0392b; /* đỏ đậm khi hover */
+}

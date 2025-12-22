@@ -25,7 +25,7 @@ const RegisterController = {
 
   async getTotalUser(req, res) {
     try {
-      const total = await User.count({ where: { VaiTro: "User" } });
+        const total = await User.count({where: {VaiTro: ["User", "Admin"]}});
       res.json({ total });
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -44,7 +44,6 @@ const RegisterController = {
                 }]
             });
 
-            // Map dữ liệu để frontend dễ dùng
             const result = users.map(user => {
                 return {
                     ID_Taikhoan: user.ID_Taikhoan,
@@ -65,49 +64,42 @@ const RegisterController = {
 async getAllWithStatus(req, res) {
   try {
     const users = await User.findAll({
-      where: { VaiTro: "User" },
-      attributes: ["ID_Taikhoan", "TaiKhoan", "Email"],
+      attributes: ["ID_Taikhoan", "TaiKhoan", "Email", "VaiTro"],
       include: [
         {
           model: Status,
           attributes: ["TrangThai", "ThoiGianCapNhat"],
-          separate: true,
-          limit: 1,
-          order: [["ThoiGianCapNhat", "DESC"]],
+          required: false, 
         },
         {
           model: LichSuDangNhap,
           as: "LichSuDangNhaps",
           attributes: ["TGDangNhap"],
-          limit: 1,
-          order: [["TGDangNhap", "DESC"]],
+          required: false,
         },
       ],
-      order: [["ID_Taikhoan", "DESC"]],
     });
 
     const now = new Date();
 
-    const result = users.map((user) => {
-      const status = user.TrangThais?.[0];
-      const lastLogin = user.LichSuDangNhaps?.[0];
+    const result = users.map(user => {
+      const status = user.TrangThais
+        ?.sort((a, b) => new Date(b.ThoiGianCapNhat) - new Date(a.ThoiGianCapNhat))[0];
+
+      const lastLogin = user.LichSuDangNhaps
+        ?.sort((a, b) => new Date(b.TGDangNhap) - new Date(a.TGDangNhap))[0];
 
       let lanDangNhapCuoi = "Chưa từng đăng nhập";
 
-      if (
-        status?.TrangThai === "offline" &&
-        status?.ThoiGianCapNhat
-      ) {
+      if (status?.TrangThai === "offline" && status?.ThoiGianCapNhat) {
         const diffMs = now - new Date(status.ThoiGianCapNhat);
         const diffMin = Math.floor(diffMs / 60000);
         const diffHour = Math.floor(diffMin / 60);
         const diffDay = Math.floor(diffHour / 24);
 
         if (diffMin < 1) lanDangNhapCuoi = "Vừa xong";
-        else if (diffMin < 60)
-          lanDangNhapCuoi = `${diffMin} phút trước`;
-        else if (diffHour < 24)
-          lanDangNhapCuoi = `${diffHour} giờ trước`;
+        else if (diffMin < 60) lanDangNhapCuoi = `${diffMin} phút trước`;
+        else if (diffHour < 24) lanDangNhapCuoi = `${diffHour} giờ trước`;
         else lanDangNhapCuoi = `${diffDay} ngày trước`;
       }
 
@@ -115,25 +107,20 @@ async getAllWithStatus(req, res) {
         ID_Taikhoan: user.ID_Taikhoan,
         TaiKhoan: user.TaiKhoan,
         Email: user.Email,
-        TrangThai: status?.TrangThai || "offline",
-
-        // Thời điểm login gần nhất (để hiển thị giờ cụ thể)
+        TrangThai: status?.TrangThai,
         TGDangNhap: lastLogin?.TGDangNhap || null,
-
-        // Lần đăng nhập cuối = thời gian từ lúc logout
         LanDangNhapCuoi:
-          status?.TrangThai === "online"
-            ? "Đang hoạt động"
-            : lanDangNhapCuoi,
+          status?.TrangThai === "online" ? "Đang hoạt động" : lanDangNhapCuoi,
       };
     });
 
     res.json(result);
   } catch (err) {
-    console.error(err);
+    console.error("getAllWithStatus error:", err);
     res.status(500).json({ error: err.message });
   }
 }
+
 
 ,
   async getById(req, res) {
@@ -156,26 +143,34 @@ async getAllWithStatus(req, res) {
     }
   },
 
-  async delete(req, res) {
-    try {
-      const id = Number(req.params.id);
+async delete(req, res) {
+  try {
+    const id = Number(req.params.id);
 
-      // Xóa lịch sử đăng nhập trước
-      await LichSuDangNhap.destroy({ where: { ID_Taikhoan: id } });
-
-      // Xóa trạng thái trước (nếu có)
-      await Status.destroy({ where: { ID_Taikhoan: id } });
-
-      // Xóa user
-      const deleted = await User.destroy({ where: { ID_Taikhoan: id } });
-      if (deleted === 0) return res.status(404).json({ message: "Tài khoản không tồn tại!" });
-
-      res.json({ message: "Xóa tài khoản thành công!" });
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ error: err.message });
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ message: "Tài khoản không tồn tại!" });
     }
+    
+    if (user.VaiTro.toLowerCase() === "admin") {
+      return res.status(403).json({
+        message: "Không thể xóa tài khoản Admin!"
+      });
+    }
+
+    await LichSuDangNhap.destroy({ where: { ID_Taikhoan: id } });
+
+    await Status.destroy({ where: { ID_Taikhoan: id } });
+
+    await User.destroy({ where: { ID_Taikhoan: id } });
+
+    res.json({ message: "Xóa tài khoản thành công!" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
+}
 };
 
 module.exports = RegisterController;

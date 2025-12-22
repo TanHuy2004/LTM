@@ -18,7 +18,7 @@
 <body>
     <div class="container">
         <header class="navbar">
-            <div class="logo">Ứng Dụng Web</div>
+            <div class="logo">Lập trình mạng máy tính</div>
 
             <nav class="nav-links">
                 <button class="login-btn" id="authButton">Đăng nhập</button>
@@ -33,57 +33,60 @@
         </main>
     </div>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-    <script src="./js/config.js"></script>
+    <script src="./config.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+            document.addEventListener("DOMContentLoaded", () => {
             const socket = io(window.AppConfig.getSocketUrl());
-            window.socket = socket; // expose toàn cục nếu cần
+            window.socket = socket;
 
-            const token = localStorage.getItem("token_user") || localStorage.getItem("token_admin");
-            const role = localStorage.getItem("role_user") || localStorage.getItem("role_admin");
             const authBtn = document.getElementById("authButton");
 
-            if (token && role) {
-                // Đánh dấu online
-                socket.emit("user_online", { token });
+            function getToken() {
+                return localStorage.getItem("token_user") || localStorage.getItem("token_admin");
+            }
 
-                authBtn.textContent = "Đăng xuất";
-                authBtn.onclick = () => {
-                    if (token && socket.connected) {
-                        socket.emit("user_offline", { token }, () => {
-                            // callback khi server đã lưu xong Status
-                            localStorage.removeItem("token_user");
-                            localStorage.removeItem("userId_user");
-                            localStorage.removeItem("role_user");
-                            localStorage.removeItem("token_admin");
-                            localStorage.removeItem("userId_admin");
-                            localStorage.removeItem("role_admin");
-                            window.location.href = "./index.html";
-                        });
-                    } else {
-                        localStorage.clear();
-                        window.location.href = "./index.html";
-                    }
-                };
+            function goOnline() {
+                const token = getToken();
+                if (token) {
+                    socket.emit("user_online", { token });
+                }
+            }
 
-                // Auto-logout khi tab đóng
-                window.addEventListener("beforeunload", () => {
-                    if (token) {
-                        const data = JSON.stringify({ token });
-                        navigator.sendBeacon(
-                            window.AppConfig.getApiUrl("/api/auth/auto-logout"),
-                            new Blob([data], { type: 'application/json' })
-                        );
-                    }
+            function goOffline(callback) {
+                const token = getToken();
+                if (token) {
+                    socket.emit("user_offline", { token }, callback);
+                } else {
+                    callback && callback();
+                }
+            }
+
+            function clearLocalStorageAndRedirect() {
+                localStorage.clear();
+                window.location.href = "./html/login.html";
+            }
+
+            function logout() {
+                goOffline(() => {
+                    clearLocalStorageAndRedirect();
                 });
+            }
+
+            if (getToken()) {
+                authBtn.textContent = "Đăng xuất";
+                authBtn.onclick = logout;
+
+                // 🔹 Emit online ngay khi load page để server biết user online
+                goOnline();
 
             } else {
-                authBtn.onclick = () => window.location.href = "./html/login.html";
+                authBtn.textContent = "Đăng nhập";
+                authBtn.onclick = () => {
+                    window.location.href = "./html/login.html";
+                };
             }
         });
     </script>
-
-
 </body>
 
 </html>

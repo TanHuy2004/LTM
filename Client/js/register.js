@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch(window.AppConfig.getApiUrl("/api/auth/register"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password })
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       if (!data.success) {
-        alert(data.message); // thông báo lỗi từ backend
+        alert(data.message); 
         return;
       }
 
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ẨN/HIỆN MẬT KHẨU
+
   const passwordInput = document.getElementById("password");
   const toggleBtn = document.getElementById("togglePassword");
   const iconEye = document.getElementById("iconEye");

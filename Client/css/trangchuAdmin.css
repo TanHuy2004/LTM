@@ -390,61 +390,46 @@ body {
 }
 
 /* ================= FIX TABLE BODY (Cho các lớp được thêm thủ công) ================= */
-
-/* TR */
-#userTableBody tr {
-    transition: background-color 0.2s ease;
+/* ==================== 6. TABLE ==================== */
+.data-panel {
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background-color: var(--color-foreground);
+    border: 1px solid var(--color-border);
 }
 
-#userTableBody tr:hover {
-    background-color: var(--color-hover-light);
+.table-scroll-wrapper {
+    overflow-x: auto;
 }
 
-.dark #userTableBody tr:hover {
-    background-color: var(--color-hover-dark);
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-/* BORDER GIỮA CÁC DÒNG */
-#userTableBody tr:not(:last-child) td {
-    border-bottom: 1px solid var(--color-border-light);
+.data-table th, .data-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
 }
 
-.dark #userTableBody tr:not(:last-child) td {
-    border-bottom-color: var(--color-border-dark);
-}
-
-/* TD */
-#userTableBody td {
-    padding: 0.75rem 1rem; 
-    font-size: 0.85rem;
-    color: var(--color-text-light);
-    white-space: nowrap;
-    vertical-align: middle;
-}
-
-.dark #userTableBody td {
-    color: var(--color-text-dark);
-}
-
-/* ACTION */
-#userTableBody .action-cell {
-    text-align: right;
-    padding-right: 1rem; 
-}
-
-/* Nút Delete trong body */
-#userTableBody .btn-delete {
-    padding: 0.4rem 0.6rem;
-    border-radius: 0.4rem;
-    background-color: var(--color-red);
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
+.data-table th {
+    font-weight: 600;
     font-size: 0.75rem;
-    font-weight: 500;
-    transition: opacity 0.2s ease;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
 }
 
-#userTableBody .btn-delete:hover {
-    opacity: 0.9;
+.status-online {
+    color: var(--color-green);
+    font-weight: 600;
+}
+
+.status-offline {
+    color: var(--color-red);
+    font-weight: 600;
+}
+
+.status-anomaly {
+    color: var(--color-anomaly);
+    font-weight: 600;
 }
