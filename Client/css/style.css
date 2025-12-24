@@ -47,6 +47,14 @@
 .navbar .nav-links .login-btn:hover {
     transform: scale(1.05);
 }
+.user-info {
+    color: white;
+    font-weight: 600;
+    font-size: 17px;
+    margin-left: auto;
+    margin-right: 10px;
+}
+
 
 /* Hero Section */
 .hero {

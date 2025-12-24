@@ -118,9 +118,10 @@ function renderUsers(users = []) {
             </td>
             <td>${u.VaiTro || ""}</td>
             <td>${u.Email || ""}</td>
-                <td>
-                    <button class="delete-btn" onclick="deleteUser(${u.ID_Taikhoan})">Xóa</button>
-                </td>
+            <td>${formatDateTime(u.ThoiGianTao) || ""}</td>
+            <td>
+                <button class="delete-btn" onclick="deleteUser(${u.ID_Taikhoan})">Xóa</button>
+            </td>
         </tr>
     `).join("");
 }
@@ -129,13 +130,29 @@ async function deleteUser(id) {
     if (!confirm("Xóa tài khoản này?")) return;
 
     const tokenAdmin = localStorage.getItem("token_admin");
-    await fetch(
-        window.AppConfig.getApiUrl(`/api/auth/users/${id}`),
-        { method: "DELETE", headers: { Authorization: `Bearer ${tokenAdmin}` } }
-    );
 
-    await loadAllUsers();
+    try {
+        const res = await fetch(
+            window.AppConfig.getApiUrl(`/api/auth/users/${id}`),
+            { method: "DELETE", headers: { Authorization: `Bearer ${tokenAdmin}` } }
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            // Hiển thị thông báo lỗi (ví dụ xóa admin)
+            alert(data.message || "Lỗi không xác định!");
+            return;
+        }
+
+        alert(data.message); // Xóa thành công
+        await loadAllUsers();
+    } catch (err) {
+        console.error(err);
+        alert("Lỗi server, vui lòng thử lại!");
+    }
 }
+
 
 async function loadUsers() {
     const tokenAdmin = localStorage.getItem("token_admin");
@@ -166,10 +183,25 @@ async function loadUsers() {
 }
 
 function formatDateTime(dateString) {
-    if (!dateString) return "Chưa từng đăng nhập";
-    return new Date(dateString).toLocaleString("vi-VN", { hour12: false });
-}
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return dateString;
 
+    // Trừ 7 tiếng
+    date.setHours(date.getHours() - 7);
+
+    const pad = (n, size = 2) => n.toString().padStart(size, "0");
+
+    const year = date.getFullYear();
+    const month = pad(date.getMonth() + 1);
+    const day = pad(date.getDate());
+
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${hours}:${minutes}:${seconds} || ${day}/${month}/${year}`;
+}
 // ================== ADD USER MODAL ==================
 const addUserModal = document.getElementById("addUserModal");
 const addUserBtn = document.querySelector(".add-user-btn");

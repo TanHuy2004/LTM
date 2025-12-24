@@ -40,8 +40,8 @@ if (data.user.role.toLowerCase() === "admin") {
     localStorage.setItem("token_admin", data.token);
     localStorage.setItem("userId_admin", data.user.id);
     localStorage.setItem("role_admin", data.user.role);
+    localStorage.setItem("username_admin", data.user.username);
 
-    // 🔥 EMIT ONLINE CHO ADMIN
     const socketAdmin = io(window.AppConfig.getSocketUrl());
     socketAdmin.emit("user_online", { token: data.token });
 
@@ -50,8 +50,8 @@ if (data.user.role.toLowerCase() === "admin") {
     localStorage.setItem("token_user", data.token);
     localStorage.setItem("userId_user", data.user.id);
     localStorage.setItem("role_user", data.user.role);
+    localStorage.setItem("username_user", data.user.username);
 
-    // 🔥 EMIT ONLINE CHO USER
     const socketUser = io(window.AppConfig.getSocketUrl());
     socketUser.emit("user_online", { token: data.token });
 
@@ -63,4 +63,15 @@ if (data.user.role.toLowerCase() === "admin") {
       alert("Không thể kết nối đến server!");
     }
   });
+});
+
+const togglePassword = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+const iconEye = document.getElementById("iconEye");
+
+togglePassword.addEventListener("click", () => {
+  const isPassword = passwordInput.type === "password";
+
+  passwordInput.type = isPassword ? "text" : "password";
+  iconEye.textContent = isPassword ? "visibility_off" : "visibility";
 });

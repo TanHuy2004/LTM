@@ -10,6 +10,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,0"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="./css/style.css">
 
 
@@ -19,6 +20,9 @@
     <div class="container">
         <header class="navbar">
             <div class="logo">Lập trình mạng máy tính</div>
+
+            <div class="user-info" id="userInfo"></div>
+            <i class="fa-solid fa-circle-user"></i>
 
             <nav class="nav-links">
                 <button class="login-btn" id="authButton">Đăng nhập</button>
@@ -34,59 +38,63 @@
     </div>
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="./config.js"></script>
+
     <script>
-            document.addEventListener("DOMContentLoaded", () => {
-            const socket = io(window.AppConfig.getSocketUrl());
-            window.socket = socket;
+    document.addEventListener("DOMContentLoaded", () => {
+        const socket = io(window.AppConfig.getSocketUrl());
+        window.socket = socket;
 
-            const authBtn = document.getElementById("authButton");
+        const authBtn = document.getElementById("authButton");
+        const userInfo = document.getElementById("userInfo");
 
-            function getToken() {
-                return localStorage.getItem("token_user") || localStorage.getItem("token_admin");
+        function getToken() {
+            return localStorage.getItem("token_admin") || localStorage.getItem("token_user");
+        }
+
+        function getUserDisplayName() {
+            const adminName = localStorage.getItem("username_admin");
+            const userName = localStorage.getItem("username_user");
+
+            if (adminName) return `ADMIN: ${adminName}`;
+            if (userName) return `USER: ${userName}`;
+            return "";
+        }
+
+        function goOnline() {
+            const token = getToken();
+            if (token) socket.emit("user_online", { token });
+        }
+
+        function goOffline(callback) {
+            const token = getToken();
+            if (token) {
+                socket.emit("user_offline", { token }, callback);
+            } else {
+                callback && callback();
             }
+        }
 
-            function goOnline() {
-                const token = getToken();
-                if (token) {
-                    socket.emit("user_online", { token });
-                }
-            }
-
-            function goOffline(callback) {
-                const token = getToken();
-                if (token) {
-                    socket.emit("user_offline", { token }, callback);
-                } else {
-                    callback && callback();
-                }
-            }
-
-            function clearLocalStorageAndRedirect() {
+        function logout() {
+            goOffline(() => {
                 localStorage.clear();
                 window.location.href = "./html/login.html";
-            }
+            });
+        }
 
-            function logout() {
-                goOffline(() => {
-                    clearLocalStorageAndRedirect();
-                });
-            }
+        if (getToken()) {
+            authBtn.textContent = "Đăng xuất";
+            authBtn.onclick = logout;
 
-            if (getToken()) {
-                authBtn.textContent = "Đăng xuất";
-                authBtn.onclick = logout;
-
-                // 🔹 Emit online ngay khi load page để server biết user online
-                goOnline();
-
-            } else {
-                authBtn.textContent = "Đăng nhập";
-                authBtn.onclick = () => {
-                    window.location.href = "./html/login.html";
-                };
-            }
-        });
-    </script>
+            userInfo.textContent = `${getUserDisplayName()}`;
+            goOnline();
+        } else {
+            authBtn.textContent = "Đăng nhập";
+            authBtn.onclick = () => {
+                window.location.href = "./html/login.html";
+            };
+        }
+    });
+</script>
 </body>
 
 </html>

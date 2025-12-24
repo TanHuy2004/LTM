@@ -1,6 +1,6 @@
 
 const SERVER_CONFIG = {
-    SERVER_IP: "192.168.1.103", 
+    SERVER_IP: "192.168.1.102", 
     PORT: 5000,
 };
 
