@@ -6,7 +6,12 @@ const bcrypt = require("bcryptjs");
 
 const SECRET = process.env.JWT_SECRET || "default_secret_key";
 
-// Hàm lấy IP chuẩn hóa
+function getVNTime() {
+  const d = new Date();
+  d.setHours(d.getHours() + 7);
+  return d;
+}
+
 function getClientIp(req) {
   let ip =
     req.headers["x-forwarded-for"] ||
@@ -56,10 +61,10 @@ const LoginController = {
     // Ghi lịch sử đăng nhập
     await LoginHistory.create({
       ID_Taikhoan: user.ID_Taikhoan,
-      TGDangNhap: new Date(),
+      TGDangNhap: getVNTime(), 
     }).catch(err => console.error("Lỗi ghi LoginHistory:", err));
 
-    // Tạo token
+
     const token = jwt.sign(
       { id: user.ID_Taikhoan, role: user.VaiTro || "User" },
       SECRET,

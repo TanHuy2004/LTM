@@ -3,6 +3,11 @@ const User = require("../models/User");
 const Status = require("../models/Status");
 const LichSuDangNhap = require("../models/LoginHistory");
 
+function getVNTime() {
+  const d = new Date();
+  d.setHours(d.getHours() + 7);
+  return d;
+}
 
 const RegisterController = {
   async create(req, res) {
@@ -14,7 +19,14 @@ const RegisterController = {
       if (await User.findOne({ where: { Email: email } })) return res.status(400).json({ success: false, message: "Email đã tồn tại!" });
 
       const hashed = await bcrypt.hash(password, 10);
-      await User.create({ TaiKhoan: username, Email: email, MatKhau: hashed, VaiTro: "User" });
+      await User.create({ 
+        TaiKhoan: username, 
+        Email: email, 
+        MatKhau: hashed, 
+        VaiTro: "User",
+        ThoiGianTao: getVNTime()   // ✅
+      });
+
 
       res.status(200).json({ success: true, message: "Đăng ký thành công!" });
     } catch (err) {
@@ -35,7 +47,7 @@ const RegisterController = {
    async getAll(req, res) {
         try {
             const users = await User.findAll({
-                attributes: ['ID_Taikhoan', 'TaiKhoan', 'Email', 'VaiTro'],
+                attributes: ['ID_Taikhoan', 'TaiKhoan', 'Email', 'VaiTro', "ThoiGianTao"],
                 include: [{
                     model: Status,
                     attributes: ['TrangThai', 'ThoiGianCapNhat'],
@@ -49,6 +61,7 @@ const RegisterController = {
                     ID_Taikhoan: user.ID_Taikhoan,
                     TaiKhoan: user.TaiKhoan,
                     Email: user.Email,
+                    ThoiGianTao: user.ThoiGianTao,
                     VaiTro: user.VaiTro,
                     TrangThai: user.TrangThais[0]?.TrangThai || 'offline'
                 };
@@ -93,22 +106,28 @@ async getAllWithStatus(req, res) {
 
       if (status?.TrangThai === "offline" && status?.ThoiGianCapNhat) {
         const diffMs = now - new Date(status.ThoiGianCapNhat);
-        const diffMin = Math.floor(diffMs / 60000);
+
+        const diffSec = Math.floor(diffMs / 1000);
+        const diffMin = Math.floor(diffSec / 60);
         const diffHour = Math.floor(diffMin / 60);
         const diffDay = Math.floor(diffHour / 24);
 
-        if (diffMin < 1) lanDangNhapCuoi = "Vừa xong";
-        else if (diffMin < 60) lanDangNhapCuoi = `${diffMin} phút trước`;
-        else if (diffHour < 24) lanDangNhapCuoi = `${diffHour} giờ trước`;
-        else lanDangNhapCuoi = `${diffDay} ngày trước`;
+        if (diffSec < 30) {
+          lanDangNhapCuoi = "Vừa xong";
+        } else if (diffMin < 60) {
+          lanDangNhapCuoi = `${diffMin || 1} phút trước`;
+        } else if (diffHour < 24) {
+          lanDangNhapCuoi = `${diffHour} giờ trước`;
+        } else {
+          lanDangNhapCuoi = `${diffDay} ngày trước`;
+        }
       }
-
       return {
         ID_Taikhoan: user.ID_Taikhoan,
         TaiKhoan: user.TaiKhoan,
         Email: user.Email,
         TrangThai: status?.TrangThai,
-        TGDangNhap: lastLogin?.TGDangNhap || null,
+        TGDangNhap: lastLogin?.TGDangNhap || "Chưa từng đăng nhập",
         LanDangNhapCuoi:
           status?.TrangThai === "online" ? "Đang hoạt động" : lanDangNhapCuoi,
       };

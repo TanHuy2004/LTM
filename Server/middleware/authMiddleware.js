@@ -11,7 +11,7 @@ const AuthMiddleware = {
 
     jwt.verify(token, SECRET, (err, payload) => {
       if (err) return res.status(403).json({ message: "Token không hợp lệ!" });
-      req.user = payload; // payload chứa id và role
+      req.user = payload;
       next();
     });
   },

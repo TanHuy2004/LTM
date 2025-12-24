@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, '../Client')));
 app.use('/api/auth', authRoutes);
 
 // ---------------- SOCKET.IO ----------------
-const onlineUsers = {}; // realtime: { userId: { role, sockets: [] } }
+const onlineUsers = {}; 
 
 function broadcastOnlineList() {
     const list = Object.keys(onlineUsers).map(id => ({
@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
             await Status.create({
                 ID_Taikhoan: userId,
                 TrangThai: "online",
-                ThoiGianCapNhat: new Date(),
+                ThoiGianCapNhat: (() => { const d = new Date(); d.setHours(d.getHours()+7); return d; })(),
                 Ip: socket.handshake.address || socket.handshake.headers['x-forwarded-for']
             });
 
@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
             await Status.create({
                 ID_Taikhoan: userId,
                 TrangThai: "offline",
-                ThoiGianCapNhat: new Date(),
+                ThoiGianCapNhat: (() => { const d = new Date(); d.setHours(d.getHours()+7); return d; })(),
                 Ip: socket.handshake.address || socket.handshake.headers['x-forwarded-for']
             });
 
@@ -105,15 +105,12 @@ io.on("connection", (socket) => {
         for (const [userId, data] of Object.entries(onlineUsers)) {
             data.sockets = data.sockets.filter(id => id !== socket.id);
             if (data.sockets.length === 0) {
-                // Xóa khỏi realtime
                 delete onlineUsers[userId];
-
-                // Tạo dòng offline khi hết socket
                 try {
                     await Status.create({
                         ID_Taikhoan: userId,
                         TrangThai: "offline",
-                        ThoiGianCapNhat: new Date(),
+                        ThoiGianCapNhat: (() => { const d = new Date(); d.setHours(d.getHours()+7); return d; })(),
                         Ip: socket.handshake.address || socket.handshake.headers['x-forwarded-for']
                     });
                 } catch (err) {

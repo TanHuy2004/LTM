@@ -19,10 +19,10 @@ const sequelize = new Sequelize(
 async function connectDB() {
   try {
     await sequelize.authenticate();
-    console.log("✔ SQL Server connected via Sequelize!");
+    console.log("SQL Server connected via Sequelize!");
     return sequelize;
   } catch (error) {
-    console.error("❌ Sequelize connection error:", error);
+    console.error("Sequelize connection error:", error);
     throw error;
   }
 }
